@@ -9,6 +9,8 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.test.web.servlet.MockMvc;
 import com.liamo.workoutsauth.TestcontainersConfiguration;
 
+import java.util.Base64;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -18,18 +20,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestcontainersConfiguration.class)
 class OAuth2IntegrationTest {
 
+    private static final String VALID_CLIENT_ID = "workouts-client";
+    private static final String VALID_CLIENT_SECRET = "secret";
+    private static final String INVALID_CLIENT_ID = "invalid";
+    private static final String INVALID_CLIENT_SECRET = "invalid";
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private RegisteredClientRepository registeredClientRepository;
 
+    private String encodeBasicAuth(String username, String password) {
+        String credentials = username + ":" + password;
+        return "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
+    }
+
     @Test
     void testRegisteredClientRepositoryConfigured() {
         // Verify that the registered client is properly configured
-        var client = registeredClientRepository.findByClientId("workouts-client");
+        var client = registeredClientRepository.findByClientId(VALID_CLIENT_ID);
         assertThat(client).isNotNull();
-        assertThat(client.getClientId()).isEqualTo("workouts-client");
+        assertThat(client.getClientId()).isEqualTo(VALID_CLIENT_ID);
         assertThat(client.getScopes()).contains("openid", "profile", "read", "write");
     }
 
@@ -41,7 +53,7 @@ class OAuth2IntegrationTest {
         mockMvc.perform(post("/oauth2/token")
                         .param("grant_type", "client_credentials")
                         .param("scope", "read")
-                        .header("Authorization", "Basic d29ya291dHMtY2xpZW50OnNlY3JldA==")) // workouts-client:secret
+                        .header("Authorization", encodeBasicAuth(VALID_CLIENT_ID, VALID_CLIENT_SECRET)))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -60,7 +72,7 @@ class OAuth2IntegrationTest {
         mockMvc.perform(post("/oauth2/token")
                         .param("grant_type", "client_credentials")
                         .param("scope", "read")
-                        .header("Authorization", "Basic aW52YWxpZDppbnZhbGlk")) // invalid:invalid
+                        .header("Authorization", encodeBasicAuth(INVALID_CLIENT_ID, INVALID_CLIENT_SECRET)))
                 .andExpect(status().isUnauthorized());
     }
 }
