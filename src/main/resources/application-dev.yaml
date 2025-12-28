@@ -107,3 +107,20 @@ spring:
 registered-client:
   react-bff-client-id: "workouts-web-bff-dev"
   react-bff-client-secret: "${REACT_BFF_CLIENT_SECRET}"
+  react-bff-redirect-uri: "http://localhost:9090/login/oauth2/code/bff"
+  react-bff-post-logout-redirect-uri: "http://localhost:9090/"
+
+app:
+  cors:
+    allowed-origins:
+      - "http://localhost:9090"
+    allowed-methods:
+      - "*"
+    allowed-headers:
+      - "*"
+    allow-credentials: true
+  
+  email:
+    base-url: "http://localhost:8080"
+    from-address: "noreply@workouts-auth.com"
+    from-name: "Workouts Auth Team"
