@@ -1,11 +1,8 @@
 package com.liamo.workouts.auth.security;
 
-import com.liamo.workouts.auth.config.properties.CorsProperties;
 import com.liamo.workouts.auth.config.properties.RegisteredClientProperties;
 import com.liamo.workouts.auth.service.WorkoutsOAuth2UserService;
 import com.liamo.workouts.auth.service.WorkoutsOidcUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -43,7 +40,6 @@ import java.util.UUID;
 
 @Configuration
 public class SecurityConfig {
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final OAuth2AuthorizationServerConfigurer configurer;
 
@@ -136,12 +132,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource(CorsProperties corsProperties) {
+    CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        corsProperties.allowedOrigins().forEach(configuration::addAllowedOrigin);
-        corsProperties.allowedMethods().forEach(configuration::addAllowedMethod);
-        corsProperties.allowedHeaders().forEach(configuration::addAllowedHeader);
-        configuration.setAllowCredentials(corsProperties.allowCredentials());
+        configuration.addAllowedOrigin("http://localhost:9090");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -169,8 +165,8 @@ public class SecurityConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri(clientProperties.reactBffRedirectUri())
-                .postLogoutRedirectUri(clientProperties.reactBffPostLogoutRedirectUri())
+                .redirectUri("http://localhost:9090/login/oauth2/code/bff")
+                .postLogoutRedirectUri("http://localhost:9090/")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .scope(OidcScopes.EMAIL)
@@ -193,7 +189,7 @@ public class SecurityConfig {
 
             repo.save(newReactBffClient);
 
-            logger.info("Registered new OAuth2 client: {}", newReactBffClient.getClientId());
+            System.out.println(newReactBffClient.getClientId());
         }
 
         return repo;
