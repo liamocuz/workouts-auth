@@ -15,7 +15,10 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,16 +59,16 @@ class JwtConfigTest {
         String subClaim = claims.getClaim("sub");
         assertEquals(publicId.toString(), subClaim);
 
-        List<String> claimsRoles = claims.getClaim("roles");
+        Set<String> claimsRoles = claims.getClaim("roles");
         assertNotNull(claimsRoles);
         assertFalse(claimsRoles.isEmpty());
 
-        List<String> userInfoRoles = userInfo
+        Set<String> userInfoRoles = userInfo
             .getRoles()
             .stream()
             .map(AuthRole::getRoles)
-            .flatMap(Arrays::stream)
-            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet());
 
         assertThat(claimsRoles).containsExactlyElementsOf(userInfoRoles);
     }

@@ -21,7 +21,10 @@ import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 /**
@@ -113,16 +116,16 @@ public class JwtConfig {
     }
 
     private void buildAccessTokenClaims(UserInfo userInfo, JwtClaimsSet.Builder claimsBuilder) {
-         List<String> roles = getRolesStringArray(userInfo.getRoles());
+        Set<String> roles = getRolesStringArray(userInfo.getRoles());
         claimsBuilder.claim("roles", roles);
     }
 
-    private List<String> getRolesStringArray(Set<AuthRole> roles) {
+    private Set<String> getRolesStringArray(Set<AuthRole> roles) {
         return roles
             .stream()
             .map(AuthRole::getRoles)
-            .flatMap(Arrays::stream)
-            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet());
     }
 
     private void buildIdTokenClaims(UserInfo userInfo, JwtClaimsSet.Builder claimsBuilder) {
