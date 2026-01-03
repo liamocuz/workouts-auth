@@ -188,8 +188,6 @@ public class SecurityConfig {
                 .build();
 
             repo.save(newReactBffClient);
-
-            System.out.println(newReactBffClient.getClientId());
         }
 
         return repo;

@@ -307,6 +307,24 @@ public class UserInfo {
 
             return new UserInfo(this);
         }
+
+        @Override
+        public String toString() {
+            return "Builder{" +
+                "id=" + id +
+                ", publicId=" + publicId +
+                ", email='" + email + '\'' +
+                ", sub='" + sub + '\'' +
+                ", provider=" + provider +
+                ", givenName='" + givenName + '\'' +
+                ", familyName='" + familyName + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
+                ", emailVerified=" + emailVerified +
+                ", enabled=" + enabled +
+                ", roles=" + roles +
+                '}';
+        }
     }
     //@formatter:on
 }

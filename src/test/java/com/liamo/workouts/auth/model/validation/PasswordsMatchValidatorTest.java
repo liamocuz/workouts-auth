@@ -58,7 +58,7 @@ class PasswordsMatchValidatorTest {
     @Test
     void isValid_whenPasswordIsNull_thenReturnFalse() {
         CreateUserRequestDTO dto = new CreateUserRequestDTO(
-            "email@exmaple.com",
+            "email@example.com",
             null,
             "password123",
             "John",

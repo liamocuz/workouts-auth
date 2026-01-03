@@ -107,7 +107,7 @@ class UserInfoRepositoryTest {
     }
 
     @Test
-    void findById_whenDeleteUser_thenReturnUser() {
+    void findById_whenDeleteUser_thenReturnEmpty() {
         userInfoRepository.deleteById(localUser.getId());
         Optional<UserInfo> found = userInfoRepository.findById(localUser.getId());
         assertThat(found).isEmpty();
