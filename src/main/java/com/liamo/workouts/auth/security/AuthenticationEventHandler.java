@@ -69,11 +69,12 @@ public class AuthenticationEventHandler {
     @EventListener
     public void handleFailure(AbstractAuthenticationFailureEvent event) {
         Authentication auth = event.getAuthentication();
-        logger.debug("Auth failure: authType={}, principalType={}",
+        logger.debug("Authentication failure: authType={}, principalType={}",
             auth.getClass().getName(),
             auth.getPrincipal() != null ? auth.getPrincipal().getClass().getName() : "null");
 
         AuthenticationException exception = event.getException();
+        logger.error("Authentication failure: {}", exception.getMessage(), exception);
         String error = exception.getClass().getSimpleName();
 
         resolveAuthProvider(auth).ifPresent(authProvider -> {
