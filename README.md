@@ -1,6 +1,8 @@
 # Workouts Auth
 
-A comprehensive OAuth2 Authorization Server built with Spring Boot that provides authentication and authorization services for client applications. This server implements the OAuth2/OpenID Connect authorization code flow with PKCE (Proof Key for Code Exchange) for secure authentication.
+A comprehensive OAuth2 Authorization Server built with Spring Boot that provides authentication and authorization 
+services for client applications. This server implements the OAuth2/OpenID Connect authorization code flow with 
+PKCE (Proof Key for Code Exchange) for secure authentication.
 
 ## Technology Stack
 
@@ -10,7 +12,7 @@ A comprehensive OAuth2 Authorization Server built with Spring Boot that provides
 - **Session Management**: Spring Session JDBC
 - **Additional Features**: 
   - Email verification for local users
-  - OAuth2/OIDC federated authentication (Google)
+  - OAuth2/OIDC federated authentication (Google, Facebook)
   - JWT token generation with custom claims
   - Observability with Micrometer and Zipkin
 
@@ -19,7 +21,7 @@ A comprehensive OAuth2 Authorization Server built with Spring Boot that provides
 - **OAuth2 Authorization Server**: Full-featured OAuth2/OIDC provider supporting authorization code flow with PKCE
 - **Multiple Authentication Methods**:
   - Local username/password authentication with email verification
-  - Federated authentication via OAuth2 providers (Google)
+  - Federated authentication via OAuth2 providers (Google, Facebook)
 - **OAuth2 Client Support**: Configured to work with OAuth2 clients
 - **Secure Token Management**: JWT access tokens and refresh tokens with configurable TTLs
 - **User Management**: Comprehensive user information storage with roles and permissions
@@ -448,11 +450,3 @@ The authorization server will start on the default port (typically 8080).
 
 ### OAuth2 Login (Federated)
 - `GET /oauth2/authorization/google` - Initiate Google login
-
-## License
-
-[Add your license here]
-
-## Contact
-
-[Add your contact information here]
