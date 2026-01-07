@@ -8,7 +8,7 @@ import java.util.UUID;
 
 /**
  * Represents a verification token associated with a user, typically used for actions
- * such as email verification or password reset.
+ * such as email verification or (not yet implemented) password reset.
  */
 @Entity
 @Table(name = "user_verification")

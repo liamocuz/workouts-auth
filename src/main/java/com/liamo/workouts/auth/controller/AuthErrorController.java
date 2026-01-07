@@ -9,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Controller to handle authentication errors and display an error page with trace information.
+ */
 @Controller
 public class AuthErrorController implements ErrorController {
     private static final Logger logger = LoggerFactory.getLogger(AuthErrorController.class);

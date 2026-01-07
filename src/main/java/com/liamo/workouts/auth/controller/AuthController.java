@@ -16,6 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
+/**
+ * Controller handling authentication-related endpoints such as sign-in, sign-up,
+ * email verification, and resending verification emails by pointing to appropriate Thymeleaf templates.
+ */
 @Controller
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);

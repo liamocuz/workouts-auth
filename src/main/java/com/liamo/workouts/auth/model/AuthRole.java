@@ -5,7 +5,7 @@ import java.util.Set;
 
 /**
  * Represents the different types of roles for our user system. Each role contains
- * {@link AuthPermissions} to determine what they can interact with and how.
+ * {@link AuthPermissions} to determine what permissions are granted to users with that role.
  */
 public enum AuthRole {
     USER(

@@ -10,6 +10,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Repository for managing {@link UserInfo} entities.
+ */
 public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
     Optional<UserInfo> findByProviderAndSub(AuthProvider provider, String sub);
 

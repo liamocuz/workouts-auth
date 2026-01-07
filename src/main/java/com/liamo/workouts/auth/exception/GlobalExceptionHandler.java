@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+/**
+ * Global exception handler for the application.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private final static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
