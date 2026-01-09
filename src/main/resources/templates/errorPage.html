@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Oops!</title>
+</head>
+<body>
+<div>
+    <h1>An Unknown Issue Occurred</h1>
+    <p>Please try again later.</p>
+    <p>Contact an administrator if this issue persists.</p>
+    <p th:if="${traceId != null}">
+        Trace ID: <b th:text="${traceId}">[traceId]</b>
+    </p>
+</div>
+</body>
+</html>

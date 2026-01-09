@@ -1,11 +1,11 @@
-package com.liamo.workoutsauth;
+package com.liamo.workouts.auth;
 
 import org.springframework.boot.SpringApplication;
 
 public class TestWorkoutsAuthApplication {
 
     public static void main(String[] args) {
-        SpringApplication.from(WorkoutsAuthApplication::main).with(TestcontainersConfiguration.class).run(args);
+        SpringApplication.from(WorkoutsAuthApplication::main).with(PostgreSQLTestcontainer.class).run(args);
     }
 
 }

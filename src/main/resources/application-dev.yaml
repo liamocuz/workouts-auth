@@ -1,0 +1,109 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      cookie:
+        name: "AUTHSESSION"
+        same-site: "Lax"
+        secure: false   # set true in prod w/ HTTPS
+        http-only: true
+        path: "/"
+
+logging:
+  level:
+    com.liamo: "debug"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "health"
+          - "info"
+          - "prometheus"
+          - "metrics"
+
+  tracing:
+    sampling:
+      probability: 1.0 # dev, everything else use 0.05-0.2
+    propagation:
+      type: "B3, W3C"
+    export:
+      zipkin:
+        endpoint: "http://localhost:9411/api/v2/spans"
+
+spring:
+  session:
+    jdbc:
+      table-name: "auth_session"
+      initialize-schema: "never"
+
+  threads:
+    virtual:
+      enabled: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "${GOOGLE_CLIENT_ID}"
+            client-secret: "${GOOGLE_CLIENT_SECRET}"
+            authorization-grant-type: "authorization_code"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - "openid"
+              - "email"
+              - "profile"
+            provider: "google"
+
+          facebook:
+            client-id: "${FACEBOOK_CLIENT_ID}"
+            client-secret: "${FACEBOOK_CLIENT_SECRET}"
+            authorization-grant-type: "authorization_code"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - "email"
+              - "public_profile"
+            provider: "facebook"
+
+        provider:
+          google:
+            issuer-uri: "https://accounts.google.com"
+          facebook:
+            authorization-uri: "https://www.facebook.com/v23.0/dialog/oauth"
+            token-uri: "https://graph.facebook.com/v23.0/oauth/access_token"
+            user-info-uri: "https://graph.facebook.com/v20.0/me?fields=id,first_name,last_name,name,email"
+            user-name-attribute: "id"
+
+  datasource:
+    driver-class-name: "org.postgresql.Driver"
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:workouts}"
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
+
+  mail:
+    host: "localhost"
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail:
+        SMTP:
+          auth: false
+          STARTTLS:
+            enable: false
+
+  jpa:
+    hibernate:
+      ddl-auto: "validate"
+    open-in-view: false
+
+  web:
+    error:
+      whitelabel:
+        enabled: false
+
+registered-client:
+  react-bff-client-id: "workouts-web-bff-dev"
+  react-bff-client-secret: "${REACT_BFF_CLIENT_SECRET}"
