@@ -109,7 +109,7 @@ public class JwtConfig {
     private Optional<UUID> parseUuid(String value) {
         try {
             return Optional.of(UUID.fromString(value));
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             logger.debug("Value is not a valid UUID: {}", value);
             return Optional.empty();
         }

@@ -23,7 +23,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Handles authentication success and failure events.
+ * Handles authentication success and failure events. Mainly used to update user last login timestamps
+ * and record authentication metrics.
  */
 @Component
 public class AuthenticationEventHandler {
@@ -44,9 +45,10 @@ public class AuthenticationEventHandler {
     @Transactional
     public void handleSuccess(InteractiveAuthenticationSuccessEvent event) {
         Authentication auth = event.getAuthentication();
-        logger.debug("Interactive auth success: authType={}, principalType={}",
+        logger.debug("Interactive Authentication success: auth={}, principal={}",
             auth.getClass().getName(),
-            auth.getPrincipal() != null ? auth.getPrincipal().getClass().getName() : "null");
+            auth.getPrincipal()
+        );
 
         resolvePublicId(auth).ifPresentOrElse(publicId -> {
             int numRowsUpdated = userInfoService.updateLastLoginByPublicId(publicId);
@@ -55,9 +57,10 @@ public class AuthenticationEventHandler {
             } else {
                 logger.debug("LastLogin updated for publicId={}, numRows={}", publicId, numRowsUpdated);
             }
-        }, () -> logger.warn("Could not extract publicId from authentication type={}, principalClass={}",
+        }, () -> logger.warn("Could not extract publicId from authentication auth={}, principal={}",
             auth.getClass().getName(),
-            auth.getPrincipal() != null ? auth.getPrincipal().getClass().getName() : "null"));
+            auth.getPrincipal()
+        ));
 
         resolveAuthProvider(auth).ifPresent(authProvider -> {
                 Tags successTags = Tags.of("result", "success", "provider", authProvider.name());
@@ -69,17 +72,18 @@ public class AuthenticationEventHandler {
     @EventListener
     public void handleFailure(AbstractAuthenticationFailureEvent event) {
         Authentication auth = event.getAuthentication();
-        logger.debug("Authentication failure: authType={}, principalType={}",
-            auth.getClass().getName(),
-            auth.getPrincipal() != null ? auth.getPrincipal().getClass().getName() : "null");
-
         AuthenticationException exception = event.getException();
-        logger.error("Authentication failure: {}", exception.getMessage(), exception);
-        String error = exception.getClass().getSimpleName();
+
+        logger.error("Authentication failure: auth={}, principal={}, message={}",
+            auth.getClass().getName(),
+            auth.getPrincipal(),
+            exception.getMessage(),
+            exception
+        );
 
         resolveAuthProvider(auth).ifPresent(authProvider -> {
                 Tags failureTags = Tags.of("result", "failure", "provider", authProvider.name(),
-                    "error", error
+                    "error", exception.getMessage()
                 );
                 meterRegistry.counter("auth.login.count", failureTags).increment();
             }
