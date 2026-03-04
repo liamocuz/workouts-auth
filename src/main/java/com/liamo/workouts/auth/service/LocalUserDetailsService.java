@@ -36,7 +36,7 @@ public class LocalUserDetailsService implements UserDetailsService {
             .password(user.getPasswordHash())
             .authorities(getAuthorities(user.getRoles()))
             .disabled(!user.isEnabled())
-            .accountLocked(!user.isEnabled())
+            .accountLocked(!user.isEmailVerified())
             .build();
     }
 

@@ -52,6 +52,7 @@ class LocalUserDetailsServiceTest {
             .givenName(FIRST_NAME)
             .familyName(LAST_NAME)
             .passwordHash(PASSWORD_HASH)
+            .emailVerified(true)
             .addRole(AuthRole.USER)
             .addRole(AuthRole.ADMIN)
             .build();
@@ -74,6 +75,56 @@ class LocalUserDetailsServiceTest {
         assertThat(userDetails.isAccountNonExpired()).isTrue();
         assertThat(userDetails.isAccountNonLocked()).isTrue();
         assertThat(userDetails.isCredentialsNonExpired()).isTrue();
+    }
+
+    @Test
+    void loadByUsername_whenUserIsNotVerified_thenAccountIsLocked() {
+        UUID userId = UUID.randomUUID();
+        UserInfo user = UserInfo
+            .newBuilder()
+            .sub(userId.toString())
+            .publicId(userId)
+            .provider(AuthProvider.LOCAL)
+            .email(EMAIL)
+            .givenName(FIRST_NAME)
+            .familyName(LAST_NAME)
+            .passwordHash(PASSWORD_HASH)
+            .addRole(AuthRole.USER)
+            .build();
+
+        when(userInfoService.findByProviderAndEmailIgnoreCase(AuthProvider.LOCAL, EMAIL))
+            .thenReturn(Optional.of(user));
+
+        var userDetails = userDetailsService.loadUserByUsername(EMAIL);
+
+        assertThat(userDetails.isAccountNonLocked()).isFalse();
+        assertThat(userDetails.isEnabled()).isTrue();
+    }
+
+    @Test
+    void loadByUsername_whenUserIsDisabledButVerified_thenAccountIsDisabledButNotLocked() {
+        UUID userId = UUID.randomUUID();
+        UserInfo user = UserInfo
+            .newBuilder()
+            .sub(userId.toString())
+            .publicId(userId)
+            .provider(AuthProvider.LOCAL)
+            .email(EMAIL)
+            .givenName(FIRST_NAME)
+            .familyName(LAST_NAME)
+            .passwordHash(PASSWORD_HASH)
+            .emailVerified(true)
+            .enabled(false)
+            .addRole(AuthRole.USER)
+            .build();
+
+        when(userInfoService.findByProviderAndEmailIgnoreCase(AuthProvider.LOCAL, EMAIL))
+            .thenReturn(Optional.of(user));
+
+        var userDetails = userDetailsService.loadUserByUsername(EMAIL);
+
+        assertThat(userDetails.isAccountNonLocked()).isTrue();
+        assertThat(userDetails.isEnabled()).isFalse();
     }
 
 }

@@ -34,10 +34,13 @@
 <div>
     <a th:href="@{/signup}">Create a Local Account</a>
 </div>
+<div>
+    <a th:href="@{/resend-verification}">Haven't verified your email? Resend verification email</a>
+</div>
 
 <!-- Display error message if login fails -->
 <div th:if="${param.error}">
-    <p style="color:red;">Invalid credentials or user does not exist.</p>
+    <p style="color:red;">Invalid email or password.</p>
 </div>
 <!-- Display message if coming from successful registration -->
 <div th:if="${param.message}">
