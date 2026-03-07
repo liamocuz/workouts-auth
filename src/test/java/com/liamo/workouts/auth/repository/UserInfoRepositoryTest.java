@@ -244,4 +244,35 @@ class UserInfoRepositoryTest {
         Optional<UserInfo> foundUser = userInfoRepository.findByPublicId(UUID.randomUUID());
         assertThat(foundUser).isEmpty();
     }
+
+    @Test
+    void findByPublicId_whenSoftDeleted_thenReturnEmpty() {
+        localUser.softDelete();
+        userInfoRepository.saveAndFlush(localUser);
+
+        Optional<UserInfo> found = userInfoRepository.findByPublicId(localUser.getPublicId());
+        assertThat(found).isEmpty();
+    }
+
+    @Test
+    void existsByProviderAndEmail_whenSoftDeleted_thenReturnFalse() {
+        localUser.softDelete();
+        userInfoRepository.saveAndFlush(localUser);
+
+        boolean exists = userInfoRepository.existsByProviderAndEmailIgnoreCase(
+            localUser.getProvider(), localUser.getEmail()
+        );
+        assertThat(exists).isFalse();
+    }
+
+    @Test
+    void findByProviderAndSub_whenSoftDeleted_thenReturnEmpty() {
+        localUser.softDelete();
+        userInfoRepository.saveAndFlush(localUser);
+
+        Optional<UserInfo> found = userInfoRepository.findByProviderAndSub(
+            localUser.getProvider(), localUser.getSub()
+        );
+        assertThat(found).isEmpty();
+    }
 }

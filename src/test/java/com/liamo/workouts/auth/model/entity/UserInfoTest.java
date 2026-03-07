@@ -2,6 +2,7 @@ package com.liamo.workouts.auth.model.entity;
 
 import com.liamo.workouts.auth.model.AuthProvider;
 import com.liamo.workouts.auth.model.AuthRole;
+import org.hibernate.annotations.SQLRestriction;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -183,6 +184,27 @@ class UserInfoTest {
         assertNotEquals(user1, user2);
         assertNotEquals(user1, user3);
         assertNotEquals(user2, user3);
+    }
+
+    @Test
+    void softDelete_thenSetsDeletedAtAndDisablesUser() {
+        UserInfo user = baseBuilder().build();
+
+        assertNull(user.getDeletedAt());
+        assertTrue(user.isEnabled());
+
+        user.softDelete();
+
+        assertNotNull(user.getDeletedAt());
+        assertFalse(user.isEnabled());
+    }
+
+    @Test
+    void entity_hasSQLRestrictionForSoftDelete() {
+        SQLRestriction restriction = UserInfo.class.getAnnotation(SQLRestriction.class);
+
+        assertNotNull(restriction, "UserInfo must have @SQLRestriction annotation");
+        assertEquals("deleted_at IS NULL", restriction.value());
     }
 
     @Test
