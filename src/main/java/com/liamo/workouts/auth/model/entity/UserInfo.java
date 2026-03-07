@@ -1,15 +1,18 @@
 package com.liamo.workouts.auth.model.entity;
 
-import com.liamo.workouts.auth.model.AuthRole;
 import com.liamo.workouts.auth.model.AuthProvider;
+import com.liamo.workouts.auth.model.AuthRole;
 import com.liamo.workouts.auth.model.validation.UserInfoBuilderValidator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents a User in our management system. This user can either be registered locally
@@ -24,6 +27,7 @@ import java.util.*;
         @UniqueConstraint(columnNames = {"public_id"})
     }
 )
+@SQLRestriction("deleted_at IS NULL")
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -182,6 +186,11 @@ public class UserInfo {
 
     public void setLastLogin(Instant lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public void softDelete() {
+        this.deletedAt = Instant.now();
+        this.enabled = false;
     }
 
     // Getters
