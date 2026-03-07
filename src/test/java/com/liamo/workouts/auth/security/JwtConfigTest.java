@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -46,6 +47,7 @@ class JwtConfigTest {
         OAuth2Authorization authorization = mock(OAuth2Authorization.class);
         when(authorization.getPrincipalName()).thenReturn(WorkoutsTestUtil.PUBLIC_ID.toString());
         when(context.getAuthorization()).thenReturn(authorization);
+        when(context.getAuthorizationGrantType()).thenReturn(AuthorizationGrantType.AUTHORIZATION_CODE);
         when(context.getTokenType()).thenReturn(OAuth2TokenType.ACCESS_TOKEN);
 
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder();
@@ -85,8 +87,8 @@ class JwtConfigTest {
         OAuth2Authorization authorization = mock(OAuth2Authorization.class);
         when(authorization.getPrincipalName()).thenReturn(WorkoutsTestUtil.PUBLIC_ID.toString());
         when(context.getAuthorization()).thenReturn(authorization);
+        when(context.getAuthorizationGrantType()).thenReturn(AuthorizationGrantType.AUTHORIZATION_CODE);
         when(context.getTokenType()).thenReturn(new OAuth2TokenType(OidcParameterNames.ID_TOKEN));
-
 
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder();
         when(context.getClaims()).thenReturn(claimsBuilder);
